@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+
+
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+        <script src="/scripts/application.js"></script>
+        <script>
+            $(document).ready(function(){
+
+                if(getSession() !== true){
+                    $('body').html("");
+                    window.location.href="http://localhost/login.html";
+                }
+                
+            });
+        </script>
+    </head>
+    <body ng-app="SteroidsApplication">
+        
+        <div id="sidebar" onclick="closeMenu();">
+
+            <div class="item item-divider" style="border: none; background:#4CAF50!important; color:#FFF!important; font-size: 0.5rem;" onclick="supersonic.ui.drawers.close()">
+                &nbsp;
+            </div>
+
+            <ul>
+                <li><a href="http://localhost/completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="promocoes.html" class="changePage"><i class="icon ion-ios-pricetag">&nbsp;</i> Ofertas recebidas&nbsp;&nbsp;<span class="badge badge-assertive" id="totalOfertas">0</span></a></li>
+                <li><a href="dash-locais.html" class="changePage"><i class="icon ion-ios-pricetags">&nbsp;</i> Buscar ofertas</a></li>
+                <li><a href="meus-cupons.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Meus cupons</a></li>
+                <li><a href="cancelados.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Cupons cancelados</a></li>
+                <li><a href="sincronizar.html" class="changePage"><i class="icon ion-radio-waves">&nbsp;</i> Sincronizar nota</a></li>
+                <li><a href="tutorial.html" class="changePage"><i class="icon ion-android-contact">&nbsp;</i> Tutorial</a></li>
+                <li><a href="configuracao.html" class="changePage"><i class="icon ion-android-settings">&nbsp;</i> Configurações</a></li>
+                <li><a href="logout.html" class="changePage"><i class="icon ion-android-exit">&nbsp;</i> Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="swipe-area"></div>
+
+        <nav id="navApp" class="nav">
+            <div class="col">
+                <i class="navicon ion-navicon-round" data-toggle="#sidebar" id="sidebar-toggle"></i>
+                <i class="rightIcon ion-pricetags" onClick="window.location.href='http://localhost/promocoes.html';">
+                    <span class="badge badge-assertive" id="totalOfertas2">0</span>
+                </i>
+                <h1 id="titleHeader" onclick="closeMenu();">Configurações</h1>
+            </div>
+        </nav>
+        
+        <div class="padding" style="padding-bottom: 70px;">
+
+            <ul class="list">
+
+                <li class="item item-toggle">
+                    Manter Conectado
+                    <label class="toggle toggle-balanced">
+                        <input type="checkbox" name="conectado" id="conectado" value="1">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+                
+            </ul>
+            <div class="list">
+                <div class="item item-divider">
+                    Escolha o raio para suas buscas
+                </div>
+                
+                <div class="item range range-positive">
+                    
+                    <i class="icon super-android-walk"></i>
+                    <input type="range" name="distancia" id="distancia" min="1" max="25" value="5">
+                    <i class="icon super-android-cart"></i>
+                    
+                </div>
+                <div class="item">
+                    <span id="resultKm"></span>
+                </div>
+            </div>
+            
+            <ul class="list">
+                <li class="item item-divider">
+                    Privacidade para receber ofertas
+                </li>
+                <li class="item item-toggle">
+                    Receber ofertas de todas<br />as empresas
+                    <label class="toggle toggle-balanced" style="margin-left: 10px;">                        
+                        <input type="radio" name="recOffers" id="recOffers1" checked value="0">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+            
+                <li class="item item-toggle">
+                    Apenas empresas que já<br />solicitei e recebi ofertas
+                    <label class="toggle toggle-balanced" style="margin-left: 10px;">
+                        
+                        <input type="radio" name="recOffers" id="recOffers2" value="1">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+                
+                <li class="item item-toggle">    
+                    Apenas empresas que<br />já comprei
+                    <label class="toggle toggle-balanced" style="margin-left: 10px;">
+                        
+                        <input type="radio" name="recOffers" id="recOffers3" value="2">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+                
+            </ul>
+            <button id="SaveSettings" class="button button-block button-positive" style="background-color: #4CAF50; color: #fff; border-color:  #4CAF50;">
+                Salvar
+            </button>
+        </div>
+        
+         <div class="tab_footer">
+            <ul>
+                <li>
+                    <a href="promocoes.html">
+                    <i class="icon ion-android-home"></i><br />
+                    Ofertas
+                    </a>
+                    
+                </li>
+                <li>
+                    <a href="dash-locais.html">
+                    <i class="icon ion-android-search"></i><br />
+                    Buscar
+                    </a>
+                </li>
+                <li>
+                    <a href="meus-cupons.html">
+                    <i class="icon ion-checkmark-circled"></i><br />
+                    Meus Cupons
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <script src="/scripts/jquery.touchSwipe.min.js"></script> 
+        <script src="/scripts/scripttouch.js"></script> 
+        
+        <script>
+            
+            $(document).ready(function(){
+                
+                $("#distancia").val(parseInt(localStorage.getItem('sale_radius')));
+                
+                $("#resultKm").text($("#distancia").val()+"km");
+                
+                $("#distancia").change(function(){
+                    $("#resultKm").text($(this).val()+"km");
+                });
+                
+                if(parseInt(localStorage.getItem('stay_logged_in')) == "1"){
+                    $("#conectado").click();
+                }
+                
+                if(parseInt(localStorage.getItem('get_offers')) == "0"){
+                    $("#recOffers1").click();
+                }
+                
+                if(parseInt(localStorage.getItem('get_offers')) == "1"){
+                    $("#recOffers2").click();
+                }
+                
+                if(parseInt(localStorage.getItem('get_offers')) == "2"){
+                    $("#recOffers3").click();
+                }
+                
+                $("#SaveSettings").click(function(){
+                    var lista = [];
+                    lista[0] = localStorage.getItem("cpf");
+                    if( $("#conectado:checked").val() !== "undefined" ){
+                        lista[1] = $("#conectado:checked").val();
+                        window.localStorage.setItem("stay_logged_in", $("#conectado:checked").val());                        
+                    }
+                    
+                    if( parseInt( lista[1] ) !== 1 ){
+                        lista[1] = 0;
+                        lista[1] = 0; 
+                    }
+                    
+                    if( parseInt($("#distancia").val()) > 0 ){
+                        lista[2] = $("#distancia").val();
+                        window.localStorage.setItem("sale_radius", $("#distancia").val());
+                    }
+                    
+                    if( $("input[name='recOffers']:checked").val() !== "undefined" ){
+                        lista[3] = $("input[name='recOffers']:checked").val();
+                        window.localStorage.setItem("get_offers", $("input[name='recOffers']:checked").val());
+                    }
+                    
+                    
+                    if(parseInt(lista[1]) !== 1){
+
+                        var time = new Date();
+                        LogadoEm = time.getHours();
+                        ExpiraEm = time.getHours() + 24;
+                        
+                        window.localStorage.setItem("ExpiraEm", ExpiraEm);
+                        window.localStorage.setItem("LogadoEm", LogadoEm);
+                        
+                    }
+
+                    
+                    updateSettingsFinish(lista);
+                    
+                });
+                
+            });
+            
+        </script>
+        
+    </body>
+</html>

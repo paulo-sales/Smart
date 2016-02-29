@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+        
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+        
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+        
+        
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+        
+        <script src="/scripts/application.js"></script>
+    </head>
+    <body ng-app="SteroidsApplication">
+        <span class="badge badge-assertive" id="totalOfertas" style="display: none;">0</span>
+        <script>
+        $(document).ready(function(){
+            
+            if(getSession() === true){
+                window.location.href="http://localhost/promocoes.html";
+            }else{
+                window.location.href="http://localhost/login.html";
+            }
+            
+        });
+      </script>
+
+    </body>
+</html>

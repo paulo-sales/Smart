@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+
+
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+        <script src="/scripts/application.js"></script>
+        <script>
+            $(document).ready(function(){
+
+                if(getSession() !== true){
+                    $('body').html("");
+                    window.location.href="http://localhost/login.html";
+                }
+
+            });
+        </script>
+    </head>
+    <body ng-app="SteroidsApplication">
+        
+        <div id="sidebar">
+
+            <div class="item item-divider" style="border: none; background:#4CAF50!important; color:#FFF!important; font-size: 0.5rem;" onclick="supersonic.ui.drawers.close()">
+                &nbsp;
+            </div>
+
+            <ul>
+                <li><a href="http://localhost/completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="promocoes.html" class="changePage"><i class="icon ion-ios-pricetag">&nbsp;</i> Ofertas recebidas&nbsp;&nbsp;<span class="badge badge-assertive" id="totalOfertas">99</span></a></li>
+                <li><a href="dash-locais.html" class="changePage"><i class="icon ion-ios-pricetags">&nbsp;</i> Buscar ofertas</a></li>
+                <li><a href="meus-cupons.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Meus cupons</a></li>
+                <li><a href="cancelados.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Cupons cancelados</a></li>
+                <li><a href="sincronizar.html" class="changePage"><i class="icon ion-radio-waves">&nbsp;</i> Sincronizar nota</a></li>
+                <li><a href="tutorial.html" class="changePage"><i class="icon ion-android-contact">&nbsp;</i> Tutorial</a></li>
+                <li><a href="configuracao.html" class="changePage"><i class="icon ion-android-settings">&nbsp;</i> Configurações</a></li>
+                <li><a href="logout.html" class="changePage"><i class="icon ion-android-exit">&nbsp;</i> Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="swipe-area"></div>
+
+        <nav id="navApp" class="nav">
+            <div class="col">
+                <i class="navicon ion-navicon-round" data-toggle="#sidebar" id="sidebar-toggle"></i>
+                <i class="rightIcon ion-pricetags" onClick="window.location.href='http://localhost/promocoes.html';">
+                    <span class="badge badge-assertive" id="totalOfertas2">0</span>
+                </i>
+                <h1 id="titleHeader">Meus Dados</h1>
+            </div>
+        </nav>
+
+        <div class="padding" onclick="closeMenu();">
+
+            <div class="list">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Nome</span>
+                    <input id="nomeNew" type="text" value="" placeholder="John" required>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Sobrenome</span>
+                    <input id="sobrenomeNew" type="text" value="" placeholder="Suhr" required>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Telefone</span>
+                    <input type="text" id="telefoneNew" value="" placeholder="(011) 1111-2222">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Email</span>
+                    <input id="email_cadastroNew" type="email" value="" placeholder="john@suhr.com" required>
+                </label>
+
+                <input id="cpfNew" type="hidden" placeholder="CPF Apenas números" value="" maxlength="11" required />
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Data de Nascimento</span>
+                    <input id="dataNew" type="date" placeholder="dd/mm/aaaaa" value="" required>
+                </label>
+
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Sexo
+                    </div>
+                    <select id="sexoNew" required>
+                        <option selected>Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Senha</span>
+                    <input id="senha_cadastroNew" type="password" name="senha_cadastro" value="" required>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Confirmar Senha</span>
+                    <input id="conf_senha_cadastroNew" type="password" name="conf_senha_cadastro" value="" required>
+                </label>
+                <div id="locationDate">
+
+                </div>
+            </div>
+
+            <button id="UpdateAccount" class="button button-block button-assertive">
+                Atualizar Dados
+            </button>
+
+        </div>
+
+        <script>
+
+            $(document).ready(function () {
+
+                $("#nomeNew").val(localStorage.getItem("nome"));
+
+                $("#sobrenomeNew").val(localStorage.getItem("sobrenome"));
+                $("#email_cadastroNew").val(localStorage.getItem("email"));
+                $("#cpfNew").val(localStorage.getItem("cpf"));
+                $("#dataNew").val(localStorage.getItem("dataNascimento"));
+                $("#telefoneNew").val((localStorage.getItem("telefone") !== undefined && localStorage.getItem("telefone") !== "undefined" && localStorage.getItem("telefone") !== "") ? localStorage.getItem("telefone") : "");
+
+                var html = "";
+                if (localStorage.getItem("sexo") === "1") {
+                    html = '<option>Selecione</option><option value="Masculino" selected>Masculino</option><option value="Feminino">Feminino</option>';
+                } else if (localStorage.getItem("sexo") === "2") {
+                    html = '<option>Selecione</option><option value="Masculino">Masculino</option><option value="Feminino" selected>Feminino</option>';
+                } else {
+                    html = '<option selected>Selecione</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option>';
+                }
+
+                $("#sexoNew").html(html);
+
+                $("#UpdateAccount").on("click", function (e) {
+                    e.preventDefault();
+                    var nome = $("#nomeNew").val();
+                    var sobrenome = $("#sobrenomeNew").val();
+                    var email = $("#email_cadastroNew").val();
+                    var cpf = $("#cpfNew").val();
+                    var data = $("#dataNew").val();
+                    var d = data.split("-");
+                    var dia = d[2];
+                    var mes = d[1];
+                    var ano = d[0];
+                    
+                    var senha = $("#senha_cadastroNew").val();
+                    var sexo = $("#sexoNew").val();
+                    var tel = $("#telefoneNew").val();
+
+                    var lista = [];
+                    lista[0] = nome;
+                    lista[1] = sobrenome;
+                    lista[2] = email;
+                    lista[3] = cpf;
+                    lista[4] = data;
+                    lista[5] = senha;
+                    lista[6] = sexo;
+                    lista[7] = tel;
+                    lista[8] = dia;
+                    lista[9] = mes;
+                    lista[10] = ano;
+
+                    validaSenha2(lista);
+                });
+
+            });
+
+            function validaSenha2(lista) {
+                var senha = document.getElementById("senha_cadastroNew").value;
+                var confsenha = document.getElementById("conf_senha_cadastroNew").value;
+
+                if (senha.length > 4) {
+                    if (senha === confsenha) {
+                        updateFinish(lista);
+                    } else {
+                        
+                        var options = {
+                            message: "Os campos senha e confirmar senha não são iguais.",
+                            buttonLabel: "Fechar"
+                        };
+                        supersonic.ui.dialog.alert("Alteração de cadastro", options);
+                    }
+                } else {
+                    
+                    var options = {
+                        message: "Sua senha esta muito curta.\nInsira no mínimo 5 caracteres.",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("Alteração de cadastro", options);
+                    
+                }
+
+            }
+
+        </script>
+
+        
+        <script src="/scripts/jquery.touchSwipe.min.js"></script> 
+        <script src="/scripts/scripttouch.js"></script> 
+        
+
+    </body>
+</html>

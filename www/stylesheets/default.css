@@ -1,0 +1,340 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 29/10/2015, 10:59:35
+    Author     : Paulo
+*/
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font: 100% verdana, arial, tahoma, sans-serif;
+  font-weight: 100;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+p{
+    font-size: 1rem;
+}
+
+.container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  -webkit-transition: left 0.4s ease-in-out;
+  -moz-transition: left 0.4s ease-in-out;
+  -ms-transition: left 0.4s ease-in-out;
+  -o-transition: left 0.4s ease-in-out;
+  transition: left 0.4s ease-in-out;
+}
+
+.nopadding{
+    padding: 0 !important;
+}
+
+.col{
+    width: 100%;
+}
+
+.button-bar{
+    position: relative;
+    z-index: 1237;
+}
+
+.nav{
+    background: #4CAF50;
+    display: flex;
+    z-index: 998;
+    width: 100%;
+    min-height: 60px;
+    top: 0;
+    box-shadow: 0px 0px 6px 1px #000;
+    position: relative;
+    z-index: 1235;
+}
+
+.nav .navicon{
+    position: absolute;
+    left: 15px;
+    width: 60px;
+    color: #fff;
+    font-size: 3rem;
+    line-height: 60px;
+    z-index: 1236;
+}
+
+.nav .rightIcon{
+    position: absolute;
+    right: -5px;
+    width: 60px;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 60px;
+    z-index: 1236;
+}
+
+.nav .rightIcon .badge{
+    position: absolute;
+    margin-top: 5px;
+    right: 20px;
+}
+
+.nav .col h1{
+    color: #ffffff;
+    width: 100%;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-top: 0px;
+    position: relative;
+}
+
+@media (max-width: 500px) {
+  
+    .nav .navicon{
+        font-size: 2.8rem;
+    }
+
+    .nav .col h1{
+        font-size: 2rem;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+  
+    .nav .navicon{
+        font-size: 2.2rem;
+    }
+
+    .nav .col h1{
+        font-size: 1.8rem;
+        margin-top: 10px;
+    }
+}
+
+
+#sidebar {
+    background: #4CAF50;
+    position: absolute;
+    width: 255px;
+    left: -260px;
+    height: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    z-index: 9998;
+    box-shadow: 0px 0px 8px 2px #000;
+    -webkit-transition: left 0.4s ease-in-out;
+    -moz-transition: left 0.4s ease-in-out;
+    -ms-transition: left 0.4s ease-in-out;
+    -o-transition: left 0.4s ease-in-out;
+    transition: left 0.4s ease-in-out;
+    overflow-x: auto;
+}
+
+#sidebar ul {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#sidebar div{ margin: 0; }
+
+#sidebar ul li a {
+  padding: 15px 10px;
+  font-size: 1.25rem;
+  font-weight: 100;
+  color: white;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #fff;
+  -webkit-transition: background 0.3s ease-in-out;
+  -moz-transition: background 0.3s ease-in-out;
+  -ms-transition: background 0.3s ease-in-out;
+  -o-transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
+}
+
+#sidebar ul li:hover a { background: #fff; color: #000; }
+
+
+#sidebar.open-sidebar { left: 0px; }
+
+.swipe-area {
+  position: absolute;
+  width: 60px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 1234;
+}
+
+.swipe-area.open{
+    width: 100%;
+}
+
+.main-content{
+    position: relative;
+    height: auto;
+    z-index: 1;
+}
+
+.boxPromo .descricao span{
+    text-align: left !important;
+    font-size: 11px;
+}
+
+.input-group-addon{
+    background: #fff;
+}
+
+.img-logo{
+    text-align: center;
+    width: 100%;
+}
+
+.btn-success{
+    background: #4CAF50 !important;
+}
+
+.btn-group{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.btn-group button{
+    width: 100%;
+    font-size: 16px;
+}
+
+.col{
+    width: 92%;
+    padding: 4%;
+}
+
+.form-control{
+    border: 1px solid #ccc !important;
+}
+
+.card{
+    border-radius: 10px !important;
+}
+
+.card .item.item-divider{
+    background: #000;
+    color: #fff;
+    font-size: 1.50rem;
+    text-align: center;
+    border-bottom-color: #000 !important;
+}
+
+.card .item.item-image{
+    border-top-color: #000 !important;
+}
+
+.card .item.item-body p strong{
+    font-size: 1.25rem
+}
+
+.card .item.item-body p.descricao{
+    text-align: justify;
+    font-size: 1.0rem;
+}
+
+.card .item.item-body p strong{
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+
+.card .item.item-body .icon{
+    float: right;    
+    position: relative;
+    z-index: 3;
+    margin-bottom: -20px;
+    margin-top: -10px;
+}
+
+.card .item.item-body .icon.button-assertive{    
+    margin-right: 5px;
+    color: #ef473a;
+    font-size: 60px;
+}
+
+.card .item.item-body .icon.button-positive{
+    margin-right: 0px;
+    color: #4CAF50;
+    font-size: 60px;
+}
+
+#listNewCoupons,
+#listSolicitados{
+    text-align: center;
+}
+#listNewCoupons #loading,
+#listSolicitados #loading{
+    margin-top: 25%;
+}
+
+.tab_footer{
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    height: 55px;
+    background: #FEFEFE;
+    box-shadow: 0px 0px 4px 1px #ccc;
+    z-index: 9990;
+}
+
+.tab_footer ul{
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+
+.tab_footer ul li{
+    float: left;
+    width: 33%;
+    height: 55px;   
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+}
+
+.tab_footer ul li.active{
+    border-top: 3px solid #4CAF50;
+}
+
+.tab_footer ul li:last-child{
+    border-right: none;
+}
+
+.tab_footer ul li a{
+    text-align: center;
+    font-size: 0.75rem;
+    color: #080808;
+    width: 100%;
+    float: left;
+}
+
+.tab_footer ul li.active a,
+.tab_footer ul li.active a i{
+    color: #4CAF50;
+}
+
+.tab_footer ul li a i{
+    font-size: 1.75rem;
+    color: #080808;
+}
+
+.list,
+#listNewCoupons.list{
+    padding-bottom: 50px;
+}

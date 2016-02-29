@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+
+
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+        <script src="/scripts/application.js"></script>
+        <script>
+            $(document).ready(function(){
+
+                if(getSession() !== true){
+                    $('body').html("");
+                    window.location.href="http://localhost/login.html";
+                }
+                
+                loadInfoCoupon();
+            });
+            
+        </script>
+    </head>
+    <body ng-app="SteroidsApplication">
+        
+        <div id="sidebar" onclick="closeMenu();">
+
+            <div class="item item-divider" style="border: none; background:#4CAF50!important; color:#FFF!important; font-size: 0.5rem;" onclick="supersonic.ui.drawers.close()">
+                &nbsp;
+            </div>
+
+            <ul>
+                <li><a href="http://localhost/completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="promocoes.html" class="changePage"><i class="icon ion-ios-pricetag">&nbsp;</i> Ofertas recebidas&nbsp;&nbsp;<span class="badge badge-assertive" id="totalOfertas">99</span></a></li>
+                <li><a href="dash-locais.html" class="changePage"><i class="icon ion-ios-pricetags">&nbsp;</i> Buscar ofertas</a></li>
+                <li><a href="meus-cupons.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Meus cupons</a></li>
+                <li><a href="cancelados.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Cupons cancelados</a></li>
+                <li><a href="sincronizar.html" class="changePage"><i class="icon ion-radio-waves">&nbsp;</i> Sincronizar nota</a></li>
+                <li><a href="tutorial.html" class="changePage"><i class="icon ion-android-contact">&nbsp;</i> Tutorial</a></li>
+                <li><a href="configuracao.html" class="changePage"><i class="icon ion-android-settings">&nbsp;</i> Configurações</a></li>
+                <li><a href="logout.html" class="changePage"><i class="icon ion-android-exit">&nbsp;</i> Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="swipe-area"></div>
+
+        <nav id="navApp" class="nav">
+            <div class="col">
+                <i class="navicon ion-navicon-round" data-toggle="#sidebar" id="sidebar-toggle"></i>
+                <h1 id="titleHeader" onclick="closeMenu();">Ofertas</h1>
+            </div>
+        </nav>
+
+        <div class="list" onclick="closeMenu();" style="padding-bottom: 70px;">
+            <div class="list card">
+
+                <div class="item item-image">
+                    <img id="imgCupom" src="">
+                </div>
+
+                <br/>
+                <p><strong style="font-size: 18px; display: block; text-align: center;" id="titleCoupon"></strong><br /></p>
+                <p id="descCupom" style="padding: 5px; text-align: justify;"></p>
+
+
+                <a class="item item-icon-left calm" href="#">
+                    <i class="icon super-calendar"></i>
+                    Data de início <span id="dataInicio">25/09/2015</span>
+                </a>
+                <a class="item item-icon-left assertive" href="#">
+                    <i class="icon super-calendar"></i>
+                    Data de Fim <span id="dataFim">25/10/2015</span>
+                </a>
+
+            </div>
+            <div class="button-bar">
+                <button class="button button-assertive accButton" data-status="2" data-id="" onClick="setCupomStatus(this);">Descartar</button>
+                <button class="button button-balanced accButton" data-status="1" data-id="" onClick="setCupomStatus(this);">Aceitar</button>
+            </div>
+        </div>
+        
+        <div class="tab_footer">
+            <ul>
+                <li>
+                    <a href="promocoes.html">
+                    <i class="icon ion-android-home"></i><br />
+                    Ofertas
+                    </a>
+                    
+                </li>
+                <li>
+                    <a href="dash-locais.html">
+                    <i class="icon ion-android-search"></i><br />
+                    Buscar
+                    </a>
+                </li>
+                <li>
+                    <a href="meus-cupons.html">
+                    <i class="icon ion-checkmark-circled"></i><br />
+                    Meus Cupons
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        
+        <script src="/scripts/jquery.touchSwipe.min.js"></script> 
+        <script src="/scripts/scripttouch.js"></script> 
+        
+
+    </body>
+</html>

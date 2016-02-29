@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+
+
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+        <script src="/scripts/application.js"></script>
+        <script>
+            $(document).ready(function(){
+
+                if(getSession() !== true){
+                    $('body').html("");
+                    window.location.href="http://localhost/login.html";
+                }
+                
+            });
+        </script>
+        <style>
+            
+            .controls {
+                margin-top: 10px;
+                border: 1px solid transparent;
+                border-radius: 2px 0 0 2px;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                height: 32px;
+                outline: none;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            }
+
+            #pac-input {
+                background-color: #fff;
+                font-family: Roboto;
+                font-size: 15px;
+                font-weight: 300;
+                margin-left: 12px;
+                padding: 0 11px 0 13px;
+                text-overflow: ellipsis;
+                width: 300px;
+            }
+
+            #pac-input:focus {
+                border-color: #4d90fe;
+            }
+
+            .pac-container {
+                font-family: Roboto;
+            }
+
+            #type-selector {
+                color: #fff;
+                background-color: #4d90fe;
+                padding: 5px 11px 0px 11px;
+            }
+
+            #type-selector label {
+                font-family: Roboto;
+                font-size: 13px;
+                font-weight: 300;
+            }
+
+            #target {
+                width: 345px;
+            }
+        </style>
+    </head>
+    <body ng-app="SteroidsApplication">
+
+        <div id="sidebar" onclick="closeMenu();">
+
+            <div class="item item-divider" style="border: none; background:#4CAF50!important; color:#FFF!important; font-size: 0.5rem;" onclick="supersonic.ui.drawers.close()">
+                &nbsp;
+            </div>
+
+            <ul>
+                <li><a href="http://localhost/completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="promocoes.html" class="changePage"><i class="icon ion-ios-pricetag">&nbsp;</i> Ofertas recebidas&nbsp;&nbsp;<span class="badge badge-assertive" id="totalOfertas">0</span></a></li>
+                <li><a href="dash-locais.html" class="changePage"><i class="icon ion-ios-pricetags">&nbsp;</i> Buscar ofertas</a></li>
+                <li><a href="meus-cupons.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Meus cupons</a></li>
+                <li><a href="cancelados.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Cupons cancelados</a></li>
+                <li><a href="sincronizar.html" class="changePage"><i class="icon ion-radio-waves">&nbsp;</i> Sincronizar nota</a></li>
+                <li><a href="tutorial.html" class="changePage"><i class="icon ion-android-contact">&nbsp;</i> Tutorial</a></li>
+                <li><a href="configuracao.html" class="changePage"><i class="icon ion-android-settings">&nbsp;</i> Configurações</a></li>
+                <li><a href="logout.html" class="changePage"><i class="icon ion-android-exit">&nbsp;</i> Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="swipe-area"></div>
+
+        <nav id="navApp" class="nav">
+            <div class="col">
+                <i class="navicon ion-navicon-round" data-toggle="#sidebar" id="sidebar-toggle"></i>
+                <i class="rightIcon ion-pricetags" onClick="window.location.href='http://localhost/promocoes.html';">
+                    <span class="badge badge-assertive" id="totalOfertas2">0</span>
+                </i>
+                <h1 id="titleHeader" onclick="closeMenu();">Buscar Ofertas</h1>
+            </div>
+        </nav>
+
+
+    <center><h3 id="searching">Buscando...</h3></center>
+
+    <input id="pac-input" class="controls" type="text" placeholder="Busque locais, empresas, etc...">
+
+    <div id="map" style="position: absolute; width: 100%; height:100%;" ></div>
+
+    <div id="place_id"></div>
+    <div class="tab_footer">
+            <ul>
+                <li>
+                    <a href="promocoes.html">
+                    <i class="icon ion-android-home"></i><br />
+                    Ofertas
+                    </a>
+                    
+                </li>
+                <li class="active">
+                    <a href="dash-locais.html">
+                    <i class="icon ion-android-search"></i><br />
+                    Buscar
+                    </a>
+                </li>
+                <li>
+                    <a href="meus-cupons.html">
+                    <i class="icon ion-checkmark-circled"></i><br />
+                    Meus Cupons
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+    <script>
+
+        var map;
+        var infowindow;
+        
+        var earthRadii = {
+            mi: 3963.1676,
+            km: 6378.1,
+            ft: 20925524.9,
+            mt: 6378100,
+            "in": 251106299,
+            yd: 6975174.98,
+            fa: 3487587.49,
+            na: 3443.89849,
+            ch: 317053.408,
+            rd: 1268213.63,
+            fr: 31705.3408
+          };
+         
+        var radius = parseFloat(localStorage.getItem('sale_radius'));        
+        radius = (radius / earthRadii['km']) * earthRadii['mt'];
+        
+        function initAutocomplete() {
+            navigator.geolocation.getCurrentPosition(showPositionSearch, showError);
+            document.getElementById("searching").style.display = 'none';
+        }
+
+        function initMap() {
+
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+            document.getElementById("searching").style.display = 'none';
+
+        }
+
+        function showPosition(position) {
+
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+            var pyrmont = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: pyrmont,
+                zoom: 14
+            });
+
+            infowindow = new google.maps.InfoWindow();
+
+            var service = new google.maps.places.PlacesService(map);
+            service.nearbySearch({
+                location: pyrmont,
+                radius: radius,
+                types: ['store']
+            }, callback);
+        }
+
+        function showPositionSearch(position) {
+            
+            var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+            var pyrmont = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: pyrmont,
+                zoom: 14
+            });
+
+            infowindow = new google.maps.InfoWindow();
+
+            var service = new google.maps.places.PlacesService(map);
+            service.nearbySearch({
+                location: pyrmont,
+                radius: radius,
+                types: ['store']
+            }, callback);
+
+            // Create the search box and link it to the UI element.
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener('bounds_changed', function () {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            var markers = [];
+            // [START region_getplaces]
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function () {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function (marker) {
+                    marker.setMap(null);
+                });
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function (place) {
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: "<h4 id='place_name'>" + place.name + "</h4>" + place.vicinity + "<br />" + " <button onclick='favoritar()'  class='button button-block icon-left super-star button-positive' style='background-color: #4CAF50; color: #fff;'>Solicitar Promoções</button>"
+                    });
+
+                    window.localStorage.setItem("placeId", place.place_id);
+                    var marker = new google.maps.Marker({
+                        position: place.geometry.location,
+                        map: map,
+                        title: 'Uluru (Ayers Rock)'
+                    });
+                    
+                    marker.addListener('click', function () {
+                        //alert(place.place_id);
+                        document.getElementById("place_id").setAttribute('value', place.place_id);
+                        infowindow.open(map, marker);
+                        
+                    });
+
+                    
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                    incluirNbPlaces(place, map, bounds);
+                });
+
+            });
+            // [END region_getplaces]
+        }
+
+        function callback(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                for (var i = 0; i < results.length; i++) {
+                    createMarker(results[i]);
+                }
+            }
+
+        }
+
+        function createMarker(place) {
+
+            //incluirNbPlaces(place);
+            var placeLoc = place.geometry.location;
+            var marker = new google.maps.Marker({
+                map: map,
+                zoom: 14,
+                position: place.geometry.location
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+
+                incluirNbPlacesByClick(place, map);
+                //alert(place.place_id);
+                document.getElementById("place_id").setAttribute('value', place.place_id);
+                infowindow.setContent("<h4 id='place_name'>" + place.name + "</h4>" + place.vicinity + "<br />" + " <button onclick='favoritar()'  class='button button-block icon-left super-star button-positive' style='background-color: #4CAF50; color: #fff;'>Solicitar Promoções</button>");
+                infowindow.open(map, this);
+            });
+        }
+
+        function showError(error) {
+
+            document.getElementById("searching").style.display = 'none';
+            switch (error.code)
+            {
+                case error.PERMISSION_DENIED:
+                    map.innerHTML = "User denied the request for Geolocation."
+                    var options = {
+                        message: "Precisamos ter acesso a sua localização.\nPor favor, lative o seu GPS.",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("SmartPromos", options);
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    map.innerHTML = "Location information is unavailable."
+                    var options = {
+                        message: "Sua localização esta indisponível, verifique se seu GPS esta ativo ou clique no botão voltar do topo e tente novamente.",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("SmartPromos", options);
+                    break;
+                case error.TIMEOUT:
+                    map.innerHTML = "The request to get user location timed out."
+                    var options = {
+                        message: "A requisição estourou o tempo limite. Clique no botão voltar no topo e tente novamente.",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("SmartPromos", options);
+                    break;
+                case error.UNKNOWN_ERROR:
+                    map.innerHTML = "An unknown error occurred."
+                    var options = {
+                        message: "Deu ruim. x(",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("SmartPromos", options);
+                    break;
+            }
+
+
+        }
+
+        document.getElementById("searching").style.display = 'none';
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?signed_in=false&libraries=places&callback=initAutocomplete" async defer></script>
+    <script>
+    function favoritar() {
+        var place_id = document.getElementById("place_id").getAttribute("value");
+        
+        var email = localStorage.getItem("email");
+        //alert(email + " " + place_id);
+        $.ajax({
+            type: "get",
+            url: getRestApi("solicitar", "?idCliente=" + email + "&idEstabelecimento=" + place_id),
+            success: function (data) {
+                window.localStorage.setItem("placeEstab", place_id);
+                window.location.href='http://localhost/confirmacao-solicitacao.html';
+            },
+            error: function () {
+                // alert('failure');
+            }
+
+        });
+    }
+    </script>
+    <script>
+
+        function incluirNbPlaces(place, map, bounds) {
+
+
+            var service = new google.maps.places.PlacesService(map);
+            service.getDetails({
+                placeId: place.place_id
+            }, function (place, status) {
+
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+
+                    var lista = [];
+                    lista[0] = place.international_phone_number;
+                    lista[1] = place.formatted_address;
+                    lista[2] = place.formatted_address;
+                    lista[3] = place.icon;
+                    lista[4] = place.name;
+                    lista[5] = place.place_id;
+                    lista[6] = place.formatted_phone_number;
+
+                    var json = JSON.stringify(lista);
+
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: getRestApi("insertNearbyPlaces", "?place=" + json),
+                        success: function (data) {
+
+
+                        },
+                        error: function (e) {
+                            //alert("Erro ao cadastrar");
+                            //steroids.view.removeLoading();
+                        } // END error
+
+
+                    });
+                }
+            });
+
+            map.fitBounds(bounds);
+
+        }
+
+        function incluirNbPlacesByClick(place, map) {
+
+
+            var service = new google.maps.places.PlacesService(map);
+            service.getDetails({
+                placeId: place.place_id
+            }, function (place, status) {
+
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+                    var lista = [];
+                    lista[0] = place.international_phone_number;
+                    lista[1] = place.formatted_address;
+                    lista[2] = place.formatted_address;
+                    lista[3] = place.icon;
+                    lista[4] = place.name;
+                    lista[5] = place.place_id;
+                    lista[6] = place.formatted_phone_number;
+
+                    var json = JSON.stringify(lista);
+
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: getRestApi("insertNearbyPlaces", "?place=" + json),
+                        success: function (data) {
+                        },
+                        error: function (e) {
+                            //alert("Erro ao cadastrar");
+                            //steroids.view.removeLoading();
+                        } // END error
+
+
+                    });
+                }
+            });
+
+
+        }
+    </script>
+
+    
+        <script src="/scripts/jquery.touchSwipe.min.js"></script> 
+        <script src="/scripts/scripttouch.js"></script> 
+        
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <title>SmartPromos</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>        
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="/stylesheets/default.css" />
+        <link rel="stylesheet" href="/stylesheets/ionicons.css" />
+
+        <link rel="stylesheet" href="/components/supersonic/css/supersonic.css">
+        <link rel="stylesheet" href="/stylesheets/application.css">        
+        <link rel="import" href="/components/supersonic/components/import.html">
+
+
+        <script src="http://localhost/cordova.js"></script>
+        <script src="/components/steroids-js/steroids.js"></script>
+        <script src="/components/angular/angular.js"></script>
+        <script src="/components/supersonic/supersonic.js"></script>
+        <script src="/components/webcomponentsjs/webcomponents.js"></script>
+
+        <script src="/scripts/application.js"></script>
+    </head>
+    <body ng-app="SteroidsApplication">
+        
+        <nav id="navApp" class="nav">
+            <div class="col">
+                <i class="navicon ion-chevron-left" onclick="window.location.href='http://localhost/meu-local.html'"></i>
+                <h1 id="titleHeader">Seus Dados</h1>
+            </div>
+        </nav>
+
+        <div id="cadastro" class="padding">
+            
+            <div class="list">
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Nome</span>
+                    <input id="nome" type="text" placeholder="John" required>
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Sobrenome</span>
+                    <input id="sobrenome" type="text" placeholder="Suhr" required>
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Email</span>
+                    <input id="email_cadastro" type="email" placeholder="john@suhr.com" required>
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">CPF</span>
+                    <input id="cpf" type="number" placeholder="CPF Apenas números" value="" maxlength="11" required />
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Data de Nascimento</span>
+                    <input id="data" type="date" placeholder="dd/MM/aaaaa" required>
+                </label>
+
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Sexo
+                    </div>
+                    <select id="sexo" required>
+                        <option selected>Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Senha</span>
+                    <input id="senha_cadastro" type="password" name="senha_cadastro" value="" required>
+                </label>
+                
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Confirmar Senha</span>
+                    <input id="conf_senha_cadastro" type="password" name="conf_senha_cadastro" value="" required>
+                    <a href="../../common/views/layout.html"></a>
+                </label>
+                
+                <div id="locationDate">
+
+                </div>
+                
+            </div>
+            
+            <button id="CreateAccount" class="button button-block button-positive" style="background-color: #4CAF50; color: #fff; border-color:  #4CAF50;">
+                Criar Conta
+            </button>
+            
+        </div>
+        
+        <script>
+
+        $(document).ready(function () {
+
+            $("#locationDate").html(localStorage.getItem("locale"));
+
+            $("#CreateAccount").click(function (e) {
+                e.preventDefault();
+                var nome = $("#nome").val();
+                var sobrenome = $("#sobrenome").val();
+                var email = $("#email_cadastro").val();
+                var cpf = $("#cpf").val();
+                //var datFOrmat = $("#data").val();
+                //var d = data.split("-");
+                var data = $("#data").val();
+                var d = data.split("-");
+                var dia = d[2];
+                var mes = d[1];
+                var ano = d[0];
+                var senha = $("#senha_cadastro").val();
+                var sexo = $("#sexo").val();
+                var endereco = $("#endereco").val();
+                var bairro = $("#bairro").val();
+                var cidade = $("#cidade").val();
+                var estado = $("#estado").val();
+                var pais = $("#pais").val();
+                var cep = $("#cep").val();
+                var tipo = $("#tipo").val();
+                var sale_radius = 5;
+                var get_offers = 0;
+                var stay_logged_in = 1;
+
+                var lista = [];
+                lista[0] = nome;
+                lista[1] = sobrenome;
+                lista[2] = email;
+                lista[3] = cpf;
+                lista[4] = data;
+                lista[5] = senha;
+                lista[6] = sexo;
+                lista[7] = endereco;
+                lista[8] = bairro;
+                lista[9] = cidade;
+                lista[10] = estado;
+                lista[11] = pais;
+                lista[12] = RetiraAcentos(cep);
+                lista[13] = tipo;
+                lista[14] = dia;
+                lista[15] = mes;
+                lista[16] = ano;
+                lista[17] = sale_radius;
+                lista[18] = get_offers;
+                lista[19] = stay_logged_in;
+                validaSenha(lista);
+            });
+
+        });
+
+        function validaSenha(lista) {
+            var senha = document.getElementById("senha_cadastro").value;
+            var confsenha = document.getElementById("conf_senha_cadastro").value;
+            
+            var err = 0;
+            
+            for (i = 0; i < lista.length; i++) {
+                if( lista[i] === "" || lista[i] === null ){
+                    err++;
+                }
+            }
+            
+            if(err === 0 ){
+                if (senha.length > 4) {
+                    if (senha === confsenha) {
+
+                        cadFinish1(lista);
+                    } else {
+
+                        var options = {
+                            message: "Os campos senha e confirmar senha não são iguais.",
+                            buttonLabel: "Ok, entendi"
+                        };
+                        supersonic.ui.dialog.alert("Novo Cadastro", options);
+                    }
+                } else {
+
+                    var options = {
+                        message: "Sua senha esta muito curta.\nInsira no mínimo 5 caracteres.",
+                        buttonLabel: "Ok, entendi"
+                    };
+                    supersonic.ui.dialog.alert("Novo Cadastro", options);
+                }
+            }else{
+                var options = {
+                    message: "Precisamos que você preencha todos campos deste formulário =(",
+                    buttonLabel: "Ok, entendi"
+                };
+                supersonic.ui.dialog.alert("Novo Cadastro", options);
+            }
+            
+
+        }
+
+        function cadFinish1(lista) {
+
+            var json = JSON.stringify(lista);
+            //steroids.logger.log(getRestApi("insertCustmer", "&cliente=" + json));
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                //url: getRestApi("insertCustmer", "?cliente=" + json),
+                url: getRestApi("insertCustmer", "&cliente=" + json),
+                success: function (data) {
+                    localStorage.clear();
+
+                    window.localStorage.setItem("email", data.email);
+                    window.localStorage.setItem("cpf", data.cpf);
+                    window.localStorage.setItem("telefone", data.telefone);
+                    window.localStorage.setItem("nome", data.nome);
+                    window.localStorage.setItem("sobrenome", data.sobrenome);
+                    window.localStorage.setItem("sexo", data.sexo);
+					
+                        mes = parseInt(data.mesAniversario);
+                        if( mes < 10 ){
+                                mes = "0"+data.mesAniversario;
+                        }
+                        dia = parseInt(data.diaAniversario);
+                        if( dia < 10 ){
+                                dia = "0"+data.diaAniversario;
+                        }
+                        window.localStorage.setItem("dataNascimento", data.anoAniversario+"-"+mes+"-"+dia);
+
+                    window.localStorage.setItem("sale_radius", data.raioOferta);
+                    window.localStorage.setItem("stay_logged_in", data.manterLogado);
+                    window.localStorage.setItem("get_offers", data.receberOfertas);
+                    
+                    var options = {
+                        message: "Olá, "+data.nome+"!\nSeu cadastro foi realizado com sucesso!\nVocê já pode navegar pelo mapa e solicitar promoções para os estabelecimentos de sua preferência.",
+                        buttonLabel: "Fechar"
+                    };
+                    supersonic.ui.dialog.alert("Criação de conta", options);
+                    
+                    window.location.href='http://localhost/promocoes.html';
+
+                },
+                error: function (jqXHR, status, error) {
+                    var err = eval("(" + jqXHR.responseText + ")");
+                    alert(err.Message);
+                }
+                //error: function(e){
+                //    alert("Não foi possível efetuar seu cadastro.");
+                //steroids.view.removeLoading();
+                //} // END error
+
+            });
+
+        }
+    </script>
+
+    </body>
+</html>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<widget>
+    <allow-intent href="*" />
+    <access origin="*"/>
+    <preference name="internet" value="true"/>
+    <preference name="AutoHideSplashScreen" value="false"/>
+    <preference name="fullscreen" value="false"/>
+</widget>
