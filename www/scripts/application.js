@@ -10,9 +10,18 @@ $(document).ready(function(){
     checkLogin();
     
     if(getSession() === true){
-        getTotalCoupon(0);
+        getTotalCoupon();
     }
     
+    $(".ion-loop").click(function(){
+       //$(this).removeClass('ion-loop');
+       //$(this).addClass('ion-looping');
+       //setTimeout(function() { window.location.reload(); }, 1000);
+       getOffers(0);
+       
+    });
+    
+    setInterval(function(){ setTimeout(function() { getTotalCoupon(); }, 0); }, 30000);
     //bindClick();
    
 });
@@ -207,12 +216,12 @@ function getRequests() {
             
             HTML= "";
             if(len === 0){
-                strHTML = "<li class='item'>Não encontramos nenhum pedido seu de ofertas.</li>";
+                strHTML = "<li class='item'>Nenhuma oferta solicitada.</li>";
                 HTML+=strHTML;
             }
             
             for (var i = 0; i < len; i++) {
-                var nome = data.places[i].nome;
+                var nome = data[i].nome;
                 
                 strHTML = "<li class='item'>" + nome + "</li>";
                 HTML+=strHTML;
@@ -239,6 +248,10 @@ function getOffers(status) {
     d.innerHTML = "<img src='/img/loading.gif' width='100' height='100' id='loading' >";
     
     if(value !== "undefined"){
+        
+        $("#ico_sinc").removeClass('ion-loop');
+        $("#ico_sinc").addClass('ion-looping');
+        
         $.ajax({
             dataType: "json",
             type: "GET",
@@ -271,10 +284,12 @@ function getOffers(status) {
                     novoArr[i].quantidade = array_search(novoArr[i].id, data);
                 }
                 
-                var len = novoArr.length;
-                //Armazeno o total de cupons recebidos e exibe no drawer
-                window.localStorage.setItem("numPromo", len);
-
+                if(data.length === undefined){
+                    var len = 0;
+                }else{
+                    var len = (data.length > 0) ? novoArr.length : 0;
+                }
+                
                 HTML= "";
 
                 if(len === 0){
@@ -331,7 +346,10 @@ function getOffers(status) {
                 
                 d2 = document.getElementById("listNewCoupons");
                 d2.innerHTML = HTML;
-                getTotalCoupon(t);
+                
+                $("#ico_sinc").removeClass('ion-looping');
+                $("#ico_sinc").addClass('ion-loop');                
+                getTotalCoupon();
             },
             error: function (e) {
                 
@@ -388,7 +406,12 @@ function getMeusCupons(st)  {
 
             HTML= "";
             
-            var len = novoArr.length;
+            
+            if(data.length === undefined){
+                var len = 0;
+            }else{
+                var len = (data.length > 0) ? novoArr.length : 0;
+            }
             
             if(len === 0){
                 
@@ -488,7 +511,12 @@ function getMyCouponsDiscards(status) {
                 novoArr[i].quantidade = array_search(novoArr[i].id, data);
             }
 
-            var len = novoArr.length;
+            
+            if(data.length === undefined){
+                var len = 0;
+            }else{
+                var len = (data.length > 0) ? novoArr.length : 0;
+            }
             
             HTML= "";
             
@@ -508,8 +536,8 @@ function getMyCouponsDiscards(status) {
                 var id = novoArr[i].id;
                 var mensagem = novoArr[i].cabecalho;
                 var imagem = novoArr[i].pathImg;
-                var dataInicio = novoArr[i].sale.dataInicio.dayOfMonth+"/"+novoArr[i].sale.dataInicio.month+"/"+novoArr[i].sale.dataInicio.year;
-                var dataFim = novoArr[i].sale.dataFim.dayOfMonth+"/"+novoArr[i].sale.dataFim.month+"/"+novoArr[i].sale.dataFim.year;
+                var dataInicio = novoArr[i].sale.dataInicio;
+                var dataFim = novoArr[i].sale.dataFim;
                 var nomeEmpresa = novoArr[i].sale.establishment.nomeFantasia;
                 var quantidade = novoArr[i].quantidade;
                 
@@ -555,7 +583,7 @@ function getMyCouponsDiscards(status) {
 
 function getOffersCount(status) {
     var value = localStorage.getItem("email");
-    
+    var total = 0;
     $.ajax({
         dataType: "json",
         type: "GET",
@@ -564,6 +592,7 @@ function getOffersCount(status) {
         success: function (data) {
             var novoArr = new Array();
             var a =0;
+            
             for (var i = 0; i < data.length; i++) {
 
                 if(novoArr.length == 0){
@@ -585,12 +614,27 @@ function getOffersCount(status) {
                 novoArr[i].quantidade = array_search(novoArr[i].id, data);
             }
 
-            var len = novoArr.length;
+
+            
+            if(data.length === undefined){
+                var len = 0;
+            }else{
+                var len = (data.length > 0) ? novoArr.length : 0;
+            }
             //Armazeno o total de cupons recebidos e exidor no drawer
             if(len === null || len === "null" || len === undefined){
                 len = 0;
             }
+            
             window.localStorage.setItem("numPromo", len);
+            
+            $("#totalOfertas").text(len);
+            $("#totalOfertas2").text(len);
+            if(len > 0){
+                $("#totalOfertas2").show();
+            }else{
+                $("#totalOfertas2").hide();
+            }
         },
         error: function (e) {
 
@@ -638,6 +682,7 @@ function getCupom(id, page){
 function setCupomStatus(Elem){
     //alert(Elem.getAttribute("data-id"));
     var cpf = localStorage.getItem("cpf");
+    
     $.ajax({
         dataType: "json",
         type: "GET",
@@ -648,7 +693,7 @@ function setCupomStatus(Elem){
                         
             if(data[0].msg === "ACEITO"){                
                 var options = {
-                    message: "Obrigado por aceitar nosso cupom!",
+                    message: "Cupom aceito.\nObrigado!",
                     buttonLabel: "Fechar"
                 };
                 supersonic.ui.dialog.alert("Cupom de Promoção", options);
@@ -674,7 +719,20 @@ function setCupomStatus(Elem){
             
         },
         error: function (e) {
-
+            if(cpf === 0){
+                var options = {
+                    message: "Parece que sua sessão expirou.\nEfetue o login novamente.",
+                    buttonLabel: "Fechar"
+                };
+                logout();
+            }else{
+                var options = {
+                    message: "Ocorreu um erro ao tentar atualizar seu cupom.",
+                    buttonLabel: "Fechar"
+                };
+            }
+            
+            supersonic.ui.dialog.alert("Cupom de Promoção", options);
             //steroids.view.removeLoading();
         } // END error
 
@@ -719,7 +777,7 @@ function utilizarCupom(Elem){
                                 supersonic.ui.dialog.alert("Utilizar Cupom", options);
                             }else if(data[0].msg === "ERRO_ESTAB"){
                                 var options = {
-                                    message: "Não localizamos a empresa responsável pelo cupom. Por favor, tente novamente, tente novamente mais tarde.",
+                                    message: "Não localizamos a empresa responsável pelo cupom. Por favor, tente novamente mais tarde.",
                                     buttonLabel: "Fechar"
                                 };
                                 supersonic.ui.dialog.alert("Utilizar Cupom", options);
@@ -731,7 +789,7 @@ function utilizarCupom(Elem){
                                 supersonic.ui.dialog.alert("Utilizar Cupom", options);
                             }else if(data[0].msg === "ERRO_LISTA"){
                                 var options = {
-                                    message: "Não conseguimos atualizar seu cupom. Por favor, tente novamente mais tarde.",
+                                    message: "Não conseguimos utilizar seu cupom. Por favor, tente novamente mais tarde.",
                                     buttonLabel: "Fechar"
                                 };
                                 supersonic.ui.dialog.alert("Utilizar Cupom", options);
@@ -739,7 +797,11 @@ function utilizarCupom(Elem){
                             
                         },
                         error: function (e) {
-                            alert("Deu ruim.");                            
+                            var options = {
+                                message: "Não conseguimos utilizar seu cupom. Por favor, tente novamente mais tarde.",
+                                buttonLabel: "Fechar"
+                            };
+                            supersonic.ui.dialog.alert("Utilizar Cupom", options);
                         } // END error
 
                     });
@@ -759,29 +821,8 @@ function utilizarCupom(Elem){
       });
 }
 
-function getTotalCoupon(t){
-    //var total = getOffersCount(0);
-    if(t===0){
-        if(localStorage.getItem("total") <= 0){
-            var total = getOffersCount(0);
-        }else{
-            var total = localStorage.getItem("total");
-        }
-        
-    }else{
-        var total = t;
-    }
-    
-    window.localStorage.setItem("total", total);
-    
-    $("#totalOfertas").text(total);
-    if(parseInt(total) > 0){
-        $("#totalOfertas2").show();
-        $("#totalOfertas2").text(total);
-    }else{
-        $("#totalOfertas2").hide();
-    }
-    
+function getTotalCoupon(){
+    getOffersCount(0);    
 }
 
 function cadastrar() {
@@ -866,7 +907,7 @@ function validarEmail(field) {
 function checkLocation(){
     
     var options = {
-        message: "Olá! Precisamos que você ative a sua localização, pois precisamos saber alguns dados da sua geolocalização.",
+        message: "Olá, ative o serviço de localização do celular para realizar o cadastro.",
         buttonLabel: "Ok, entendi!"
     };
     supersonic.ui.dialog.alert("SmartPromos", options);
@@ -1013,7 +1054,7 @@ function showError(error)
         case error.UNKNOWN_ERROR:
             map.innerHTML = "An unknown error occurred."
             var options = {
-                message: "Deu ruim. x(",
+                message: "Ocorreu um erro desconhecido, isso pode ter relação com a sua rede ou se sua localização e GPS estiverem inativas. x(",
                 buttonLabel: "Fechar"
             };
             supersonic.ui.dialog.alert("SmartPromos", options);
@@ -1124,7 +1165,11 @@ function getLastStabRequest(){
             window.localStorage.setItem("placeEstab", null);
         },
         error: function (e) {
-            alert("Deu ruim.");                            
+            var options = {
+                message: "Não conseguimos localizar a sua requisição. x(",
+                buttonLabel: "Fechar"
+            };
+            supersonic.ui.dialog.alert("SmartPromos", options);                            
         } // END error
 
     });
@@ -1135,13 +1180,14 @@ function updateFinish(lista) {
 
     var json = JSON.stringify(lista);
     //steroids.logger.log(getRestApi("updateCustmer", "&cliente="+json));
+    $(".bgLoading").show();
     $.ajax({
         dataType: "json",
         type: "GET",
         url: getRestApi("updateCustmer", "&cliente="+json),
         //url: getRestApi("updateCustmer", "?cliente="+json),
         success: function (data) {
-            
+            $(".bgLoading").hide();
             if(data == "E-mail já cadastrado no sistema"){
                 var options = {
                     message: "Este e-mail já esta em uso!\nEscolha outro endereço de e-mail, por gentileza.",
@@ -1186,7 +1232,9 @@ function updateFinish(lista) {
         },
         error: function (jqXHR, status, error) {
             var err = eval("(" + jqXHR.responseText + ")");
+            $(".bgLoading").hide();
             alert(err.Message);
+            
         }
         //error: function(e){
         //    alert("Não foi possível efetuar seu cadastro.");
@@ -1292,3 +1340,5 @@ function resetPass(){
     }
     
 }
+
+function vaildaCpf(strCPF) { var Soma; var Resto; Soma = 0; if (strCPF == "00000000000") return false; for (i=1; i<=9; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i); Resto = (Soma * 10) % 11; if ((Resto == 10) || (Resto == 11)) Resto = 0; if (Resto != parseInt(strCPF.substring(9, 10)) ) return false; Soma = 0; for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i); Resto = (Soma * 10) % 11; if ((Resto == 10) || (Resto == 11)) Resto = 0; if (Resto != parseInt(strCPF.substring(10, 11) ) ) return false; return true; }

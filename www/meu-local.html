@@ -29,7 +29,7 @@
         <script>
             
             var options = {
-                message: "Bem-vindo ao Smartpromos.\nDefina primeiro a sua localização.",
+                message: "Bem-vindo ao Smartpromos.\nPor favor, confirme ou altere a sua localização.",
                 buttonLabel: "Ok, entendi"
             };
             supersonic.ui.dialog.alert("Novo Cadastro", options);
@@ -54,14 +54,14 @@
             <div class="list">
                 
                 <label class="item item-input">
-                    <input id="nEnd" type="text" placeholder="Digite sua localização" />  
+                    <input id="nEnd" type="text" placeholder="Digite seu endereço" />  
                 </label>
                 
             </div>
             
             <div class="button-bar hiddenNEnd">
 
-                <a class="button" onclick="changeLocation()">Carregar</a>
+                <a class="button" onclick="changeLocation()">Buscar</a>
                 <a class="button" onclick="cancelChandeLocation()">Cancelar</a>
 
             </div>

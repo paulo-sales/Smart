@@ -349,7 +349,7 @@
                 case error.UNKNOWN_ERROR:
                     map.innerHTML = "An unknown error occurred."
                     var options = {
-                        message: "Deu ruim. x(",
+                        message: "Um erro desconhecido ocorreu. Isso pode ter relação com a sua conexão ou se a sua licalização ou GPS estiverem inativos x(",
                         buttonLabel: "Fechar"
                     };
                     supersonic.ui.dialog.alert("SmartPromos", options);
@@ -367,10 +367,11 @@
         var place_id = document.getElementById("place_id").getAttribute("value");
         
         var email = localStorage.getItem("email");
-        //alert(email + " " + place_id);
+        
         $.ajax({
             type: "get",
-            url: getRestApi("solicitar", "?idCliente=" + email + "&idEstabelecimento=" + place_id),
+            url: getRestApi("solicitar", "&idCliente=" + email + "&idEstabelecimento=" + place_id),
+            //url: getRestApi("solicitar", "?idCliente=" + email + "&idEstabelecimento=" + place_id),
             success: function (data) {
                 window.localStorage.setItem("placeEstab", place_id);
                 window.location.href='http://localhost/confirmacao-solicitacao.html';
@@ -405,11 +406,12 @@
                     lista[6] = place.formatted_phone_number;
 
                     var json = JSON.stringify(lista);
-
+                    
                     $.ajax({
                         dataType: "json",
                         type: "GET",
-                        url: getRestApi("insertNearbyPlaces", "?place=" + json),
+                        url: getRestApi("insertNearbyPlaces", "&place=" + json),
+                        //url: getRestApi("insertNearbyPlaces", "?place=" + json),
                         success: function (data) {
 
 
@@ -448,11 +450,12 @@
                     lista[6] = place.formatted_phone_number;
 
                     var json = JSON.stringify(lista);
-
+                    
                     $.ajax({
                         dataType: "json",
                         type: "GET",
-                        url: getRestApi("insertNearbyPlaces", "?place=" + json),
+                        url: getRestApi("insertNearbyPlaces", "&place=" + json),
+                        //url: getRestApi("insertNearbyPlaces", "?place=" + json),
                         success: function (data) {
                         },
                         error: function (e) {

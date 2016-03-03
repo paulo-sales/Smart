@@ -35,6 +35,8 @@
                 }
                 //checkLocation();
                 getOffers(0);
+                setInterval(function(){ setTimeout(function() { getOffers(0); }, 0); }, 30000);
+                
             });
         </script>
     </head>
@@ -60,10 +62,13 @@
         </div>
 
         <div class="swipe-area"></div>
-
+        
         <nav id="navApp" class="nav">
             <div class="col">
                 <i class="navicon ion-navicon-round" data-toggle="#sidebar" id="sidebar-toggle"></i>
+                
+                <i class="rightIcon icon ion-loop" id='ico_sinc' style="margin-right: 60px;"></i>
+                
                 <i class="rightIcon ion-pricetags" onClick="window.location.href='http://localhost/promocoes.html';">
                     <span class="badge badge-assertive" id="totalOfertas2">0</span>
                 </i>

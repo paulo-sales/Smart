@@ -99,12 +99,27 @@
             
         </div>
         
+        <div class="bgLoading">
+            <i class="icon ion-looping"></i>
+        </div>
+        
         <script>
 
         $(document).ready(function () {
 
             $("#locationDate").html(localStorage.getItem("locale"));
-
+            
+            $("#cpf").focusout(function(){
+               if(vaildaCpf($(this).val()) === false){
+                   var options = {
+                        message: "Número de CPF inválido, por favor confira os dados ou insira um novo.",
+                        buttonLabel: "Ok, entendi"
+                    };
+                    supersonic.ui.dialog.alert("Novo Cadastro", options);
+                    $(this).focus();
+               } 
+            });
+            
             $("#CreateAccount").click(function (e) {
                 e.preventDefault();
                 var nome = $("#nome").val();
@@ -192,7 +207,7 @@
                 }
             }else{
                 var options = {
-                    message: "Precisamos que você preencha todos campos deste formulário =(",
+                    message: "É necessário o preenchimento de todos os dados",
                     buttonLabel: "Ok, entendi"
                 };
                 supersonic.ui.dialog.alert("Novo Cadastro", options);
@@ -205,46 +220,69 @@
 
             var json = JSON.stringify(lista);
             //steroids.logger.log(getRestApi("insertCustmer", "&cliente=" + json));
+            $(".bgLoading").show();
             $.ajax({
                 dataType: "json",
                 type: "GET",
                 //url: getRestApi("insertCustmer", "?cliente=" + json),
                 url: getRestApi("insertCustmer", "&cliente=" + json),
                 success: function (data) {
-                    localStorage.clear();
+                    $(".bgLoading").hide();                    
+                    if(data.msg === "EMAIL_EXISTE"){
+                        
+                        var options = {
+                            message: "Olá, "+lista[0]+"!\nEnontramos um cadastro com esta conta de e-mail, caso você não lembre sua senha utilize a função de recuperar senha.",
+                            buttonLabel: "Fechar"
+                        };
+                        supersonic.ui.dialog.alert("Criação de conta", options);
+                        
+                    }else if(data.msg === "CPF_EXISTE"){
+                        
+                        var options = {
+                            message: "Olá, "+lista[0]+"!\nEnontramos um cadastro com o CPF informado, caso você não lembre sua senha utilize a função de recuperar senha.",
+                            buttonLabel: "Fechar"
+                        };
+                        supersonic.ui.dialog.alert("Criação de conta", options);
+                        
+                    }else{
+                        
+                        localStorage.clear();
 
-                    window.localStorage.setItem("email", data.email);
-                    window.localStorage.setItem("cpf", data.cpf);
-                    window.localStorage.setItem("telefone", data.telefone);
-                    window.localStorage.setItem("nome", data.nome);
-                    window.localStorage.setItem("sobrenome", data.sobrenome);
-                    window.localStorage.setItem("sexo", data.sexo);
-					
-                        mes = parseInt(data.mesAniversario);
-                        if( mes < 10 ){
-                                mes = "0"+data.mesAniversario;
-                        }
-                        dia = parseInt(data.diaAniversario);
-                        if( dia < 10 ){
-                                dia = "0"+data.diaAniversario;
-                        }
-                        window.localStorage.setItem("dataNascimento", data.anoAniversario+"-"+mes+"-"+dia);
+                        window.localStorage.setItem("email", data.email);
+                        window.localStorage.setItem("cpf", data.cpf);
+                        window.localStorage.setItem("telefone", data.telefone);
+                        window.localStorage.setItem("nome", data.nome);
+                        window.localStorage.setItem("sobrenome", data.sobrenome);
+                        window.localStorage.setItem("sexo", data.sexo);
 
-                    window.localStorage.setItem("sale_radius", data.raioOferta);
-                    window.localStorage.setItem("stay_logged_in", data.manterLogado);
-                    window.localStorage.setItem("get_offers", data.receberOfertas);
+                            mes = parseInt(data.mesAniversario);
+                            if( mes < 10 ){
+                                    mes = "0"+data.mesAniversario;
+                            }
+                            dia = parseInt(data.diaAniversario);
+                            if( dia < 10 ){
+                                    dia = "0"+data.diaAniversario;
+                            }
+                            window.localStorage.setItem("dataNascimento", data.anoAniversario+"-"+mes+"-"+dia);
+
+                        window.localStorage.setItem("sale_radius", data.raioOferta);
+                        window.localStorage.setItem("stay_logged_in", data.manterLogado);
+                        window.localStorage.setItem("get_offers", data.receberOfertas);
+
+                        var options = {
+                            message: "Olá, "+data.nome+"!\nSeu cadastro foi realizado com sucesso!\nVocê já pode navegar pelo mapa e solicitar promoções para os estabelecimentos de sua preferência.",
+                            buttonLabel: "Fechar"
+                        };
+                        supersonic.ui.dialog.alert("Criação de conta", options);
+
+                        window.location.href='http://localhost/promocoes.html';
+
+                    }
                     
-                    var options = {
-                        message: "Olá, "+data.nome+"!\nSeu cadastro foi realizado com sucesso!\nVocê já pode navegar pelo mapa e solicitar promoções para os estabelecimentos de sua preferência.",
-                        buttonLabel: "Fechar"
-                    };
-                    supersonic.ui.dialog.alert("Criação de conta", options);
-                    
-                    window.location.href='http://localhost/promocoes.html';
-
                 },
                 error: function (jqXHR, status, error) {
                     var err = eval("(" + jqXHR.responseText + ")");
+                    $(".bgLoading").hide();
                     alert(err.Message);
                 }
                 //error: function(e){
