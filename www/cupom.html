@@ -48,7 +48,8 @@
             </div>
 
             <ul>
-                <li><a href="http://localhost/completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="completar-cadastro.html" class="changePage"><i class="icon ion-edit">&nbsp;</i> Meus dados</a></li>
+                <li><a href="minha-localizacao.html" class="changePage"><i class="icon ion-ios-location">&nbsp;</i> Minha Localização</a></li>
                 <li><a href="promocoes.html" class="changePage"><i class="icon ion-ios-pricetag">&nbsp;</i> Ofertas recebidas&nbsp;&nbsp;<span class="badge badge-assertive" id="totalOfertas">99</span></a></li>
                 <li><a href="dash-locais.html" class="changePage"><i class="icon ion-ios-pricetags">&nbsp;</i> Buscar ofertas</a></li>
                 <li><a href="meus-cupons.html" class="changePage"><i class="icon ion-bag">&nbsp;</i> Meus cupons</a></li>
@@ -73,6 +74,7 @@
             <div class="list card">
 
                 <div class="item item-image">
+                    <button class="button button-small button-balanced accButton" data-status="" data-id="" data-cod="" onClick="utilizarCupom(this);" style="position: absolute; top: 0; right: 0; font-size: 15px; padding: 10px;">Utilizar Cupom</button>                    
                     <img id="imgCupom" src="">
                 </div>
 
@@ -91,7 +93,8 @@
                 </a>
 
             </div>
-            <div class="button-bar">        
+            <div class="button-bar">
+                <button class="button button-assertive accButton" data-status="2" data-id="" onClick="descartarCuponsAceitos(this);">Descartar</button>
                 <button class="button button-balanced accButton" data-status="" data-id="" data-cod="" onClick="utilizarCupom(this);">Utilizar Cupom</button>
             </div>
         </div>

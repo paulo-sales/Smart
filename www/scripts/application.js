@@ -366,7 +366,7 @@ function getOffers(status) {
     
 }
 
-function getMeusCupons(st)  {
+function getMeusCupons(st, refPage)  {
     
     var value = localStorage.getItem("email");
     
@@ -436,12 +436,12 @@ function getMeusCupons(st)  {
                 
                 strHTML = '<div class="card">';
                 
-                    strHTML+= '<div class="item item-divider clickAcc" alt="cupom" id="' + id + '" onClick="goToCupom(this);">';
+                    strHTML+= '<div class="item item-divider clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">';
                         strHTML+=nomeEmpresa;
                         strHTML+='<span class="badge badge-assertive" id="tCupons">'+quantidade+'</span>';
                     strHTML+= '</div>';
 
-                    strHTML+= '<div class="item item-image clickAcc" alt="cupom" id="' + id + '" onClick="goToCupom(this);">';
+                    strHTML+= '<div class="item item-image clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">';
                         strHTML+='<img src="'+imagem+'">';
                     strHTML+= '</div>';
                     
@@ -453,7 +453,9 @@ function getMeusCupons(st)  {
                         
                         strHTML+='<p><span>inicia em '+dataInicio+' | Finaliza '+dataFim+'</span></p>';
                         
-                        strHTML+= '<i class="icon ion-plus-circled btn button-positive clickAcc" alt="cupom" id="' + id + '" onClick="goToCupom(this);"></i>';
+                        strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">Saiba Mais</a>';
+                        
+                        //strHTML+= '<i class="icon ion-plus-circled btn button-positive clickAcc" alt="cupom" id="' + id + '" onClick="goToCupom(this);"></i>';
                         
                     strHTML+= '</div>';
                     
@@ -560,7 +562,10 @@ function getMyCouponsDiscards(status) {
                         
                         strHTML+='<p><span>inicia em '+dataInicio+' | Finaliza '+dataFim+'</span></p>';
                         
-                        strHTML+= '<i class="icon ion-plus-circled btn button-positive clickAcc" alt="cupon-descartado" id="' + id + '" onClick="goToCupom(this);"></i>';
+                        
+                        strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="cupon-descartado" id="' + id + '" onClick="goToCupom(this);">Saiba Mais</a>';
+                        
+                        //strHTML+= '<i class="icon ion-plus-circled btn button-positive clickAcc" alt="cupon-descartado" id="' + id + '" onClick="goToCupom(this);"></i>';
                         
                     strHTML+= '</div>';
                     
@@ -740,7 +745,69 @@ function setCupomStatus(Elem){
    
 }
 
+function descartarCuponsAceitos(Elem){
+    //alert(Elem.getAttribute("data-id"));
+    var cpf = localStorage.getItem("cpf");
+    
+    $.ajax({
+        dataType: "json",
+        type: "GET",
+        url: getRestApi("descartarCuponsAceitos", "&myCupomId=" + Elem.getAttribute("data-id").trim()+"&cpf=" + cpf.trim()+"&status="+Elem.getAttribute("data-status").trim()),
+        //url: getRestApi("setCupomStatus", "?myCupomId=" + Elem.getAttribute("data-id").trim()+"&cpf=" + cpf.trim()+"&status="+Elem.getAttribute("data-status").trim()),
+        success: function (data) {
+            //alert(data[0].msg);
+                        
+            if(data[0].msg === "ACEITO"){                
+                var options = {
+                    message: "Cupom aceito.\nObrigado!",
+                    buttonLabel: "Fechar"
+                };
+                supersonic.ui.dialog.alert("Cupom de Promoção", options);
+                
+                window.location.href="http://localhost/meus-cupons.html";
+            }else if(data[0].msg === "RECUSADO"){
+                var options = {
+                    message: "Obrigado pela atenção!\nFique alerta para novas promoções.",
+                    buttonLabel: "Fechar"
+                };
+                supersonic.ui.dialog.alert("Cupom de Promoção", options);
+                
+                window.location.href="http://localhost/descartados.html";
+            }else if(data[0].msg === "ERRO"){
+                var options = {
+                    message: "Ocorreu um erro ao tentar atualizar seu cupom.",
+                    buttonLabel: "Fechar"
+                };
+                supersonic.ui.dialog.alert("Cupom de Promoção", options);
+            }
+            getOffers(0);
+            //getRequests();
+            
+        },
+        error: function (e) {
+            if(cpf === 0){
+                var options = {
+                    message: "Parece que sua sessão expirou.\nEfetue o login novamente.",
+                    buttonLabel: "Fechar"
+                };
+                logout();
+            }else{
+                var options = {
+                    message: "Ocorreu um erro ao tentar atualizar seu cupom.",
+                    buttonLabel: "Fechar"
+                };
+            }
+            
+            supersonic.ui.dialog.alert("Cupom de Promoção", options);
+            //steroids.view.removeLoading();
+        } // END error
+
+    });
+   
+}
+
 function utilizarCupom(Elem){
+    
     var options = {
         message: "Por favor, digite o código de confirmação.",
         buttonLabels: ["Confirmar", "Cancelar"],
@@ -951,15 +1018,15 @@ function getAddress(coords) {
 
             var html = "";
 
-            html += '<input type="hidden" name="endereco" id="endereco" value="' + results[0].address_components[1].long_name + ", " + results[0].address_components[0].long_name + '" />';
+            html += '<input type="hidden" name="endereco" id="endereco" value="' + results[0].address_components[1].long_name + '" />';
 
             html += '<input type="hidden" name="bairro" id="bairro" value="' + results[0].address_components[2].long_name + '" />';
 
             html += '<input type="hidden" name="cidade" id="cidade" value="' + results[0].address_components[3].long_name + '" />';
 
-            html += '<input type="hidden" name="estado" id="estado" value="' + results[0].address_components[4].long_name + '" />';
+            html += '<input type="hidden" name="estado" id="estado" value="' + results[0].address_components[5].long_name + '" />';
 
-            html += '<input type="hidden" name="pais" id="pais" value="' + results[0].address_components[5].long_name + '" />';
+            html += '<input type="hidden" name="pais" id="pais" value="' + results[0].address_components[6].long_name + '" />';
 
             html += '<input type="hidden" name="cep" id="cep" value="' + results[0].address_components[7].long_name + '" />';
 
@@ -1285,6 +1352,33 @@ function updateSettingsFinish(lista) {
 
 }
 
+function updateLocale(lista) {
+
+    var json = JSON.stringify(lista);
+    //steroids.logger.log(getRestApi("updateCustmer", "&cliente="+json));
+    $(".bgLoading").show();
+    $.ajax({
+        dataType: "json",
+        type: "GET",
+        url: getRestApi("updateLocale", "&locale="+json),
+        success: function (data) {            
+            $(".bgLoading").hide();            
+            var options = {
+                message: "Dados atualizados com sucesso!",
+                buttonLabel: "Fechar"
+            };
+            supersonic.ui.dialog.alert("Alteração de localização", options);
+            
+        },
+        error: function (jqXHR, status, error) {
+            var err = eval("(" + jqXHR.responseText + ")");
+            $(".bgLoading").hide();
+            alert(err.Message);
+            
+        }
+    });
+}
+
 function resetPass(){
     
     var email = $("#email").val();
@@ -1342,3 +1436,70 @@ function resetPass(){
 }
 
 function vaildaCpf(strCPF) { var Soma; var Resto; Soma = 0; if (strCPF == "00000000000") return false; for (i=1; i<=9; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i); Resto = (Soma * 10) % 11; if ((Resto == 10) || (Resto == 11)) Resto = 0; if (Resto != parseInt(strCPF.substring(9, 10)) ) return false; Soma = 0; for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i); Resto = (Soma * 10) % 11; if ((Resto == 10) || (Resto == 11)) Resto = 0; if (Resto != parseInt(strCPF.substring(10, 11) ) ) return false; return true; }
+
+function getLocalizacao(){
+    
+    $(".bgLoading").show();
+    $.ajax({
+        dataType: "json",
+        type: "GET",
+        //url: getRestApi("insertCustmer", "?cliente=" + json),
+        url: getRestApi("getLocalizacao", "&customer=" + localStorage.getItem("cpf")),
+        success: function (data) {
+            $(".bgLoading").hide();                    
+            
+            $("#id_locale").val(data.id);
+            $("#cep").val(data.cep);
+            $("#endereco").val(data.rua);
+            $("#numero").val(data.numero);
+            $("#bairro").val(data.bairro);
+            $("#cidade").val(data.cidade);
+            $("#estado").val(data.estado);
+            $("#pais").val(data.pais);
+            
+            var html = "";
+            if (data.tipoEndenreco === "Residencial") {
+                html = '<option value="Residencial" selected>Residencial</option><option value="Trabalho">Trabalho</option><option value="Outros">Outros</option>';
+            } else if (data.tipoEndenreco === "Trabalho") {
+                html = '<option value="Residencial">Residencial</option><option value="Trabalho" selected>Trabalho</option><option value="Outros">Outros</option>';
+            } else {
+                html = '<option value="Residencial">Residencial</option><option value="Trabalho">Trabalho</option><option value="Outros" selected>Outros</option>';
+            }
+
+            $("#tipoLocalizacao").html(html);
+
+        },
+        error: function (jqXHR, status, error) {
+            var err = eval("(" + jqXHR.responseText + ")");
+            $(".bgLoading").hide();
+            alert(err.Message);
+        }
+        //error: function(e){
+        //    alert("Não foi possível efetuar seu cadastro.");
+        //steroids.view.removeLoading();
+        //} // END error
+
+    });
+
+}
+
+function buscaEnderecoPorCEP(cep) {
+    $(".bgLoading").show();
+    $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + cep, function () {
+        if (resultadoCEP["resultado"] != '0') {
+           
+            $("#endereco").val(unescape(resultadoCEP["tipo_logradouro"]) + " " + unescape(resultadoCEP["logradouro"]));
+            $("#bairro").val(unescape(resultadoCEP["bairro"]));
+            $("#cidade").val(unescape(resultadoCEP["cidade"]));
+            $("#estado").val(unescape(resultadoCEP["uf"]));
+
+        } else {
+            $("#cep").val("CEP não encontrado");
+            $("#endereco").val("");
+            $("#bairro").val("");
+            $("#cidade").val("");
+            $("#estado").val("");
+        }
+        $(".bgLoading").hide();
+    });
+}

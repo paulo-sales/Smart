@@ -76,6 +76,17 @@
                     </select>
                 </label>
                 
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Tipo da sua localização
+                    </div>
+                    <select id="tipoLocalizacao" required>
+                        <option value="Residencial">Residencial</option>
+                        <option value="Trabalho">Trabalho</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </label>
+                
                 <label class="item item-input item-stacked-label">
                     <span class="input-label">Senha</span>
                     <input id="senha_cadastro" type="password" name="senha_cadastro" value="" required>
@@ -145,6 +156,7 @@
                 var sale_radius = 5;
                 var get_offers = 0;
                 var stay_logged_in = 1;
+                var tipoLocalizacao = $("#tipoLocalizacao").val();;
 
                 var lista = [];
                 lista[0] = nome;
@@ -167,6 +179,7 @@
                 lista[17] = sale_radius;
                 lista[18] = get_offers;
                 lista[19] = stay_logged_in;
+                lista[20] = tipoLocalizacao;
                 validaSenha(lista);
             });
 
@@ -217,7 +230,7 @@
         }
 
         function cadFinish1(lista) {
-
+            
             var json = JSON.stringify(lista);
             //steroids.logger.log(getRestApi("insertCustmer", "&cliente=" + json));
             $(".bgLoading").show();
@@ -291,7 +304,7 @@
                 //} // END error
 
             });
-
+            
         }
     </script>
 

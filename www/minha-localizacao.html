@@ -67,62 +67,54 @@
                 <i class="rightIcon ion-pricetags" onClick="window.location.href='http://localhost/promocoes.html';">
                     <span class="badge badge-assertive" id="totalOfertas2">0</span>
                 </i>
-                <h1 id="titleHeader">Meus Dados</h1>
+                <h1 id="titleHeader">Minha Localização</h1>
             </div>
         </nav>
 
         <div class="padding" onclick="closeMenu();">
 
             <div class="list">
+                
+                <input id="id_locale" type="hidden" value="">
+                
                 <label class="item item-input item-stacked-label">
-                    <span class="input-label">Nome</span>
-                    <input id="nomeNew" type="text" value="" placeholder="John" required>
+                    <span class="input-label">Seu CEP</span>
+                    <input id="cep" type="text" value="" placeholder="02520000" maxlength="8" required>
                 </label>
                 <label class="item item-input item-stacked-label">
-                    <span class="input-label">Sobrenome</span>
-                    <input id="sobrenomeNew" type="text" value="" placeholder="Suhr" required>
+                    <span class="input-label">Endereço</span>
+                    <input id="endereco" type="text" value="" placeholder="Rua leão xiii, 100" required>
                 </label>
                 <label class="item item-input item-stacked-label">
-                    <span class="input-label">Telefone</span>
-                    <input type="text" id="telefoneNew" value="" placeholder="(011) 1111-2222">
+                    <span class="input-label">Número</span>
+                    <input id="numero" type="text" value="" placeholder="nº">
                 </label>
                 <label class="item item-input item-stacked-label">
-                    <span class="input-label">Email</span>
-                    <input id="email_cadastroNew" type="email" value="" placeholder="john@suhr.com" required>
+                    <span class="input-label">Bairro</span>
+                    <input id="bairro" type="text" value="" placeholder="Bela Vista" required>
                 </label>
-
-                <input id="cpfNew" type="hidden" placeholder="CPF Apenas números" value="" maxlength="11" required />
-
                 <label class="item item-input item-stacked-label">
-                    <span class="input-label">Data de Nascimento</span>
-                    <input id="dataNew" type="date" placeholder="dd/mm/aaaaa" value="" required>
+                    <span class="input-label">Cidade</span>
+                    <input type="text" id="cidade" value="" placeholder="São Paulo">
                 </label>
-
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Estado</span>
+                    <input type="text" id="estado" value="" placeholder="São Paulo">
+                </label>
+                
+                <input id="pais" type="hidden" value="">
+                
                 <label class="item item-input item-select">
                     <div class="input-label">
-                        Sexo
+                        Tipo da sua localização
                     </div>
-                    <select id="sexoNew" required>
-                        <option selected>Selecione</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Feminino">Feminino</option>
+                    <select id="tipoLocalizacao" required>
                     </select>
                 </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Senha</span>
-                    <input id="senha_cadastroNew" type="password" name="senha_cadastro" value="" required>
-                </label>
-                <label class="item item-input item-stacked-label">
-                    <span class="input-label">Confirmar Senha</span>
-                    <input id="conf_senha_cadastroNew" type="password" name="conf_senha_cadastro" value="" required>
-                </label>
-                <div id="locationDate">
-
-                </div>
             </div>
 
             <button id="UpdateAccount" class="button button-block button-assertive">
-                Atualizar Dados
+                Atualizar Localização
             </button>
 
         </div>
@@ -134,54 +126,36 @@
         <script>
 
             $(document).ready(function () {
-
-                $("#nomeNew").val(localStorage.getItem("nome"));
-
-                $("#sobrenomeNew").val(localStorage.getItem("sobrenome"));
-                $("#email_cadastroNew").val(localStorage.getItem("email"));
-                $("#cpfNew").val(localStorage.getItem("cpf"));
-                $("#dataNew").val(localStorage.getItem("dataNascimento"));
-                $("#telefoneNew").val((localStorage.getItem("telefone") !== undefined && localStorage.getItem("telefone") !== "undefined" && localStorage.getItem("telefone") !== "") ? localStorage.getItem("telefone") : "");
-
-                var html = "";
-                if (localStorage.getItem("sexo") === "1") {
-                    html = '<option>Selecione</option><option value="Masculino" selected>Masculino</option><option value="Feminino">Feminino</option>';
-                } else if (localStorage.getItem("sexo") === "2") {
-                    html = '<option>Selecione</option><option value="Masculino">Masculino</option><option value="Feminino" selected>Feminino</option>';
-                } else {
-                    html = '<option selected>Selecione</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option>';
-                }
-
-                $("#sexoNew").html(html);
-
+                
+                getLocalizacao();
+                
+                $("#cep").change(function(){
+                    buscaEnderecoPorCEP($(this).val());
+                });
+                
                 $("#UpdateAccount").on("click", function (e) {
                     e.preventDefault();
-                    var nome = $("#nomeNew").val();
-                    var sobrenome = $("#sobrenomeNew").val();
-                    var email = $("#email_cadastroNew").val();
-                    var cpf = $("#cpfNew").val();
-                    var data = $("#dataNew").val();
-                    var d = data.split("-");
-                    var dia = d[2];
-                    var mes = d[1];
-                    var ano = d[0];
                     
-                    var senha = $("#senha_cadastroNew").val();
-                    var sexo = $("#sexoNew").val();
-                    var tel = $("#telefoneNew").val();
-
+                    var id_locale   = $("#id_locale").val();
+                    var cep         = $("#cep").val();
+                    var endereco    = $("#endereco").val();
+                    var numero      = $("#numero").val();
+                    var bairro      = $("#bairro").val();
+                    var cidade      = $("#cidade").val();
+                    var estado      = $("#estado").val();
+                    var pais        = $("#pais").val();
+                    var tipoLocale  = $("#tipoLocalizacao").val();
+                
                     var lista = [];
-                    lista[0] = nome;
-                    lista[1] = sobrenome;
-                    lista[2] = email;
-                    lista[3] = cpf;
-                    lista[4] = data;
-                    lista[5] = senha;
-                    lista[6] = sexo;
-                    lista[7] = tel;
-                    lista[8] = dia;
-                    lista[9] = mes;
-                    lista[10] = ano;
+                    lista[0] = id_locale;
+                    lista[1] = cep;
+                    lista[2] = endereco;
+                    lista[3] = numero;
+                    lista[4] = bairro;
+                    lista[5] = cidade;
+                    lista[6] = estado;
+                    lista[7] = pais;
+                    lista[8] = tipoLocale;
 
                     validaSenha2(lista);
                 });
@@ -189,28 +163,23 @@
             });
 
             function validaSenha2(lista) {
-                var senha = document.getElementById("senha_cadastroNew").value;
-                var confsenha = document.getElementById("conf_senha_cadastroNew").value;
+                
+                var err = 0;
 
-                if (senha.length > 4) {
-                    if (senha === confsenha) {
-                        updateFinish(lista);
-                    } else {
-                        
-                        var options = {
-                            message: "Os campos senha e confirmar senha não são iguais.",
-                            buttonLabel: "Fechar"
-                        };
-                        supersonic.ui.dialog.alert("Alteração de cadastro", options);
+                for (i = 0; i < lista.length; i++) {
+                    if( lista[i] === "" || lista[i] === null ){
+                        err++;
                     }
-                } else {
-                    
+                }
+
+                if(err === 0 ){
+                    updateLocale(lista);
+                }else{
                     var options = {
-                        message: "Sua senha esta muito curta.\nInsira no mínimo 5 caracteres.",
-                        buttonLabel: "Fechar"
+                        message: "É necessário o preenchimento de todos os dados",
+                        buttonLabel: "Ok, entendi"
                     };
-                    supersonic.ui.dialog.alert("Alteração de cadastro", options);
-                    
+                    supersonic.ui.dialog.alert("Atualizar localização", options);
                 }
 
             }
