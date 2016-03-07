@@ -451,9 +451,15 @@ function getMeusCupons(st, refPage)  {
                         
                         strHTML+='<p class="descricao">'+mensagem+'</p>';
                         
-                        strHTML+='<p><span>inicia em '+dataInicio+' | Finaliza '+dataFim+'</span></p>';
+                        strHTML+='<p class="descricao"><strong style="font-size: 16px;">Validade da oferta</strong></p>';                        
+                        strHTML+='<p class="descricao"><span>Início '+dataInicio+'</span><br /><span>Fim '+dataFim+'</span></p>';
                         
-                        strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">Saiba Mais</a>';
+                        if(refPage === "cupom"){
+                            strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">Usar Cupom</a>';
+                        }else{
+                            strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="'+refPage+'" id="' + id + '" onClick="goToCupom(this);">Saiba Mais</a>';
+                        }
+                        
                         
                         //strHTML+= '<i class="icon ion-plus-circled btn button-positive clickAcc" alt="cupom" id="' + id + '" onClick="goToCupom(this);"></i>';
                         
@@ -560,8 +566,11 @@ function getMyCouponsDiscards(status) {
                         
                         strHTML+='<p class="descricao">'+mensagem+'</p>';
                         
-                        strHTML+='<p><span>inicia em '+dataInicio+' | Finaliza '+dataFim+'</span></p>';
+                        strHTML+='<p><strong>Validade da oferta</strong></p>';
                         
+                        //strHTML+='<p><span>inicia em '+dataInicio+' | Finaliza '+dataFim+'</span></p>';
+                        strHTML+='<a class="item item-icon-left calm" href="#" style="color: #000;"><i class="icon super-calendar"></i>Início <span id="dataInicio" style="color: #000;">'+dataInicio+'</span></a>';
+                        strHTML+='<a class="item item-icon-left assertive" href="#" style="color: #000;"><i class="icon super-calendar"></i>Fim <span id="dataFim" style="color: #000;">'+dataFim+'</span></a>';
                         
                         strHTML+= '<a class="button icon-right super-chevron-right button-balanced clickAcc" alt="cupon-descartado" id="' + id + '" onClick="goToCupom(this);">Saiba Mais</a>';
                         
